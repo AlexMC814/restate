@@ -1,11 +1,34 @@
-import { Text, Image, ScrollView, View, TouchableOpacity } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  Text,
+  View,
+  Alert,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import images from "@/constants/images";
 import icons from "@/constants/icons";
+import { login } from "@/lib/appwrite";
+import { useGlobalContext } from "@/lib/global-provider";
+import { Redirect } from "expo-router";
 
 const SignIn = () => {
-  const handleLogin = () => {};
+  const { refetch, loading, isLoggedIn } = useGlobalContext();
+
+  if (!loading && isLoggedIn) return <Redirect href="/" />;
+
+  const handleLogin = async () => {
+    const result = await login();
+
+    if (result) {
+      // Alert.alert("Success", "Successfully logged in");
+      refetch();
+    } else {
+      Alert.alert("Error", "Failed to login");
+    }
+  };
 
   return (
     <SafeAreaView className="bg-white h-full">
@@ -21,15 +44,12 @@ const SignIn = () => {
           </Text>
           <Text className="text-2xl font-rubik-bold text-black-300 text-center mt-2">
             Let's get You Closer to {"\n"}
-            <Text className="text-primary-300">Your Ideal Home</Text>
-          </Text>
-          <Text className="text-center text-rubik text-lg mt-12 text-black-200">
-            Login to ReState with Google
+            <Text className="text-primary-500">Your Ideal Home</Text>
           </Text>
 
           <TouchableOpacity
             onPress={handleLogin}
-            className="bg-white shadow-md shadow-zinc-300 rounded-full w-full py-4 mt-5"
+            className="bg-white shadow-md shadow-zinc-300 rounded-full w-full py-4 mt-20"
           >
             <View className="flex flex-row items-center justify-center">
               <Image
